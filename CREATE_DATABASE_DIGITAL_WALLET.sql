@@ -15,7 +15,7 @@ CREATE TABLE CLIENTS (
     document NVARCHAR(11),
     gender NVARCHAR(10),
     email NVARCHAR(100),
-    celphone NVARCHAR(10),
+    cellphone NVARCHAR(10),
     client_status NVARCHAR(15)
 );
 
@@ -30,8 +30,7 @@ CREATE TABLE TRANSACTIONS (
 );
 
 CREATE TABLE WALLETS (
-    wallet_uuid UNIQUEIDENTIFIER NOT NULL PRIMARY KEY DEFAULT NEWID(),
-    client_uuid UNIQUEIDENTIFIER,
+    client_uuid UNIQUEIDENTIFIER NOT NULL PRIMARY KEY,
     balance DECIMAL(18, 3),
-    FOREIGN KEY (client_uuid) REFERENCES CLIENTS(client_uuid)
+    FOREIGN KEY (client_uuid) REFERENCES CLIENTS(client_uuid) ON DELETE CASCADE
 );
