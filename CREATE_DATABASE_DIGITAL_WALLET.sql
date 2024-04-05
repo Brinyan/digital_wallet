@@ -1,36 +1,36 @@
-USE MASTER;
-GO
-
 CREATE DATABASE DIGITAL_WALLET;
 GO
 
 USE DIGITAL_WALLET;
 GO
 
-CREATE TABLE CLIENTS (
-    client_uuid UNIQUEIDENTIFIER NOT NULL PRIMARY KEY DEFAULT NEWID(),
-    first_name NVARCHAR(100),
-    last_name NVARCHAR(100),
-    document_type NVARCHAR(4),
-    document NVARCHAR(11),
-    gender NVARCHAR(10),
-    email NVARCHAR(100),
-    cellphone NVARCHAR(10),
-    client_status NVARCHAR(15)
+CREATE TABLE WALLETS (
+  wallet_uuid UNIQUEIDENTIFIER NOT NULL PRIMARY KEY DEFAULT NEWID(),
+  balance DECIMAL(18,3) NOT NULL,
+  client_uuid UNIQUEIDENTIFIER NOT NULL UNIQUE
 );
+
+CREATE TABLE CLIENTS (
+  client_uuid UNIQUEIDENTIFIER NOT NULL PRIMARY KEY DEFAULT NEWID(),
+  first_name NVARCHAR(100) NOT NULL,
+  last_name NVARCHAR(100) NOT NULL,
+  document_type NVARCHAR(4) NOT NULL,
+  document NVARCHAR(11) NOT NULL,
+  gender NVARCHAR(10),
+  email NVARCHAR(100) NOT NULL,
+  celphone NVARCHAR(10) NOT NULL,
+  client_status NVARCHAR(15) NOT NULL,
+  wallet_uuid UNIQUEIDENTIFIER NOT NULL UNIQUE, 
+  CONSTRAINT fk_clients_wallets FOREIGN KEY (wallet_uuid) REFERENCES WALLETS (wallet_uuid)
+);
+
 
 CREATE TABLE TRANSACTIONS (
-    transaction_uuid UNIQUEIDENTIFIER NOT NULL PRIMARY KEY DEFAULT NEWID(),
-    client_uuid UNIQUEIDENTIFIER,
-    amount DECIMAL(18, 3),
-    type_transaction NVARCHAR(50),
-    date_transaction DATETIME,
-    confirmation_code NVARCHAR(50),
-    FOREIGN KEY (client_uuid) REFERENCES CLIENTS(client_uuid)
-);
-
-CREATE TABLE WALLETS (
-    client_uuid UNIQUEIDENTIFIER NOT NULL PRIMARY KEY,
-    balance DECIMAL(18, 3),
-    FOREIGN KEY (client_uuid) REFERENCES CLIENTS(client_uuid) ON DELETE CASCADE
+  transaction_uuid UNIQUEIDENTIFIER NOT NULL PRIMARY KEY DEFAULT NEWID(),
+  client_uuid UNIQUEIDENTIFIER NOT NULL,
+  amount DECIMAL(18,3) NOT NULL,
+  type_transaction NVARCHAR(50) NOT NULL,
+  date_transaction DATETIME NOT NULL,
+  confirmation_code NVARCHAR(50) NULL,
+  CONSTRAINT fk_transactions_clients FOREIGN KEY (client_uuid) REFERENCES CLIENTS (client_uuid)
 );
